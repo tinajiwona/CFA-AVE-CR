@@ -1,0 +1,32 @@
+####CFA-AVE-CR
+
+library(lavaan)
+head(HolzingerSwineford1939)
+cfamodel <-'visual=~x1+x2+x3
+  textual=~x4+x5+x6
+  speed=~x7+x8+x9' 
+cfafit <- cfa(cfamodel,HolzingerSwineford1939,std.lv=T)###std.lv-只标准化latent value，std.all标准化全部变量
+summary(cfafit,fit.measures=T)
+fitmeasures(cfafit,fit.measures = 'all',baseline.model = NULL)#显示所有拟合值
+standardizedsolution(cfafit)#显示标准化
+
+####计算AVE-CR
+install.packages('semTools')
+library(semTools)
+reliability(cfafit)
+##############以上是ML-最大释然估计的方法做############
+##############以下是OLS-偏最小二乘的估计方法做############
+####partial least squres
+install.packages("matrixpls")
+library(matrixpls)
+##建模
+cfamodel1 <- 'visual=~x1+x2+x3
+  textual=~x4+x5+x6
+  speed=~x7+x8+x9'
+##前几行是非数列，所有选子集
+mydata <- subset(HolzingerSwineford1939,select=c(x1,x2,x3,x4,x5,x6,x7,x8,x9))
+##算协方差
+cov <- cov(mydata)
+##用matrixpls包进行拟合
+fit <- matrixpls(cov,cfamodel1,standardize = T)
+summary(fit)
