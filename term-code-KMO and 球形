@@ -1,0 +1,100 @@
+tradefacilitation <- read.csv('E:/仁荷大学/F-S/r语言/term exame.csv/tradefacilitaion.csv')
+head(tradefacilitation)
+globaltrade <- read.csv('E:/仁荷大学/F-S/r语言/term exame.csv/global trade.csv')
+head(globaltrade)
+informatization <- read.csv('E:/仁荷大学/F-S/r语言/term exame.csv/informatization.csv')
+head(informatization)
+names(globaltrade)
+names(tradefacilitation)
+new <- merge(globaltrade,tradefacilitation,by = 'Country.Code')
+head(new)
+new1 <- merge(new,informatization,by='Country.Code')
+str(new1)
+head(new1)
+table(factor(new1$group.x))
+write.csv(new1,file = 'E:/仁荷大学/F-S/r语言/term exame.csv/totaldata.csv')
+head(new1)
+
+
+
+#####import data-GT,TF,IF
+total <- read.csv('E:/仁荷大学/F-S/r语言/term exame.csv/totaldata.csv')
+head(total)
+globaltrade1 <- total[,c('im2010','im2012'	,'im2014'	,'im2016'	,'im2018'	,'ex2010'	,'ex2012'	,'ex2014'	,'ex2016'	,'ex2018')	]
+head(globaltrade1)
+tradefacilitation1 <- total[,c('gr2010','gr2012','gr2014','gr2016','gr2018'	,'pb12010','pb12012','pb12014','pb12016','pb12018','tb12010','tb12012','tb12014','tb12016','tb12018','gp12010','gp12012','gp12014','gp12016','gp12018'),]
+head(tradefacilitation1)
+IF <- total[,c('B2010','B2012','B2014'	,'B2016','B2018','i12010','i12012','i12014'	,'i12016','i12018','m12010'	,'m12012'	,'m12014','m12016','m12018','s12010','s12012'	,'s12014'	,'s12016','s12018')]
+head(IF)
+######BATTELET和KMO-globaltrade1
+iGT <- globaltrade1[,c('im2010','im2012'	,'im2014'	,'im2016'	,'im2018')]
+eGT <- globaltrade1[,c('ex2010'	,'ex2012'	,'ex2014'	,'ex2016'	,'ex2018')]
+#######TF-
+TFgr <- tradefacilitation1[,c('gr2010','gr2012','gr2014','gr2016','gr2018')]
+TFpb <- tradefacilitation1[,c('pb12010','pb12012','pb12014','pb12016','pb12018')]
+TFtb <- tradefacilitation1[,c('tb12010','tb12012','tb12014','tb12016','tb12018')]
+TFgp <- tradefacilitation1[,c('gp12010','gp12012','gp12014','gp12016','gp12018')]
+#####IF
+IFB <- IF[,c('B2010','B2012','B2014'	,'B2016','B2018')]
+IFI <- IF[,c('i12010','i12012','i12014'	,'i12016','i12018')]
+IFm <- IF[,c('m12010'	,'m12012'	,'m12014','m12016','m12018')]
+IFs <- IF[,c('s12010','s12012'	,'s12014'	,'s12016','s12018')]
+
+
+########KMO and barttlet
+#####totall kmo and battlet 
+cortest.bartlett(globaltrade1)
+cortest.bartlett(tradefacilitation1)
+cortest.bartlett(IF)
+######specific each items' kmo and bartlett
+library(psych)
+cortest.bartlett(TFgp)###igt
+library(MASS)
+kmo <- function(data){
+  library(MASS)
+  X <- cor(as.matrix(data))###
+  iX <- ginv(X)###矩阵翻转
+  S2 <- diag(diag(iX^-1))###取对角线
+  AIS <- S2%*%iX%*%S2##反图像协方差
+  IS <- X+AIS-2*S2 
+  Dai <- sqrt(diag(diag(AIS)))
+  IR <- ginv(Dai)%*%IS%*%ginv(Dai)
+  AIR <- ginv(Dai)%*%AIS%*%ginv(Dai)
+  a <- apply((AIR - diag(diag(AIR)))^2, 2, sum)
+  AA <- sum(a)
+  b <- apply((X - diag(nrow(X)))^2, 2, sum)
+  BB <- sum(b)
+  MSA <- b/(b+a)                        # indiv. measures of sampling adequacy
+  AIR <- AIR-diag(nrow(AIR))+diag(MSA)  # Examine the anti-image of the
+  # correlation matrix. That is the
+  # negative of the partial correlations,
+  # partialling out all other variables.
+  
+  kmo <- BB/(AA+BB)                     # overall KMO statistic
+  
+  # Reporting the conclusion
+  if (kmo >= 0.00 && kmo < 0.50){
+    test <- 'The KMO test yields a degree of common variance
+unacceptable for FA.'
+  } else if (kmo >= 0.50 && kmo < 0.60){
+    test <- 'The KMO test yields a degree of common variance miserable.'
+  } else if (kmo >= 0.60 && kmo < 0.70){
+    test <- 'The KMO test yields a degree of common variance mediocre.'
+  } else if (kmo >= 0.70 && kmo < 0.80){
+    test <- 'The KMO test yields a degree of common variance middling.'
+  } else if (kmo >= 0.80 && kmo < 0.90){
+    test <- 'The KMO test yields a degree of common variance meritorious.'
+  } else {
+    test <- 'The KMO test yields a degree of common variance marvelous.'
+  }
+  
+  ans <- list(  overall = kmo,
+                report = test,
+                individual = MSA,
+                AIS = AIS,
+                AIR = AIR )
+  return(ans)
+  
+}    # end of kmo()
+kmo(IF)
+}
