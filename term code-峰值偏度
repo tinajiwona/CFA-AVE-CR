@@ -1,0 +1,7 @@
+#######discriptive statistics-mean-st.d-skewness-kurtosis
+install.packages('moments')###kurtosis
+library(moments)
+kurtosis(IFs$s12018)###coefficentt of kurtosis
+skewness(IFs$s12018)####coefficent of skewness
+mean(IFs$s12018)
+sd(IFs$s12018)
