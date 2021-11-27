@@ -1,0 +1,28 @@
+#####先kmo-battlet，alpha 分别对items做检验，在对总的items和变量一起错CFA，alpha检验
+data2 <- read.csv('E:/仁荷大学/F-S/r语言/term exame.csv/new1.csv')
+head(data2)
+library(lavaan)
+model1 <- 'GTim=~im2012+im2014+im2016+im2018
+      GTex=~ex2012+ex2014+ex2016+ex2018
+      TFgr=~gr2012+gr2014+gr2016+gr2018
+    TFpb=~pb12012+pb12014+pb12016+pb12018
+    TFtb=~tb12014+tb12016+tb12018
+    TFgp=~gp12012+gp12014+gp12016+gp12018
+    IFB=~B2012+B2014+B2016+B2018
+    IFI=~i12012+i12014+i12016+i12018
+    IFm=~m12012+m12014+m12016+m12018
+   IFs=~s12012+s12014+s12016+s12018
+'
+data3 <- subset(data2,select=im2012:s12018)
+head(data3)
+##算协方差
+cov <- cov(data3)
+cov
+##用matrixpls包进行拟合
+fit <- matrixpls(cov,model1)
+summary(fit)
+###AVE/alpha
+install.packages('semTools')
+library(semTools)
+cfafit2 <- cfa(model1,data3,std.lv=T)
+reliability(cfafit2)
