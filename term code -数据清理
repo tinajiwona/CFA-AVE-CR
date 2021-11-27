@@ -1,0 +1,95 @@
+#####global trade-export and import data clear#####
+#######数据清理
+export <- read.csv('E:/仁荷大学/F-S/r语言/r语言数据/global trade/出口.csv')
+head(export)
+str(export)
+newexport <- data.frame(export$锘緾ountry.Code,export$X2010,export$X2012,export$X2014,export$X2016,export$X2018)
+head(newexport)
+colnames(newexport) <- c('Country.Code','ex2010','ex2012','ex2014','ex2016','ex2018')
+import <- read.csv('E:/仁荷大学/F-S/r语言/r语言数据/global trade/进口.csv')
+head(import)
+newimport <- data.frame(import$锘緾ountry.Code,import$X2010,import$X2012,import$X2014,import$X2016,import$X2018)
+colnames(newimport) <- c('Country.Code','im2010','im2012','im2014','im2016','im2018')
+newimport
+new <- merge(newimport,newexport)
+head(new)
+country <- read.csv('E:/仁荷大学/F-S/r语言/r语言数据/Countries.csv')
+country1 <- data.frame(country$Country.Code,country$Group)
+head(country1)
+colnames(country1) <- c('Country.Code','group')
+country1
+write.csv(country1,file = 'E:/仁荷大学/F-S/r语言/term exame.csv/country1.csv')
+new2 <- merge(new,country1)
+head(new2)
+str(new2)
+globaltrade1 <- new2[new2$group %in% c('middle and low','middle and high'),]
+head(globaltrade1)
+str(globaltrade1)
+globaltrade <- complete.cases(globaltrade1)
+table(factor(globaltrade1$group))###55个中高和55个中低
+#####提取国家
+se <- read.csv('E:/仁荷大学/F-S/r语言/term exame.csv/sumict.csv')
+head(se)
+se$Country.Code
+na <- data.frame(se$Country.Code)
+na
+colnames(na) <- c("Country.Code")
+write.csv(na,file = 'E:/仁荷大学/F-S/r语言/term exame.csv/code.csv')
+new4 <- merge(globaltrade1,na)
+str(new4)
+write.csv(new4,file='E:/仁荷大学/F-S/r语言/term exame.csv/global trade.csv')
+#######informatization data clear
+brandband <- read.csv('E:/仁荷大学/F-S/r语言/r语言数据/informatization/brandband.csv')
+internetuse <- read.csv('E:/仁荷大学/F-S/r语言/r语言数据/informatization/internet use.csv')
+mobilecell <- read.csv('E:/仁荷大学/F-S/r语言/r语言数据/informatization/mobile cell .csv')
+safty <- read.csv('E:/仁荷大学/F-S/r语言/r语言数据/informatization/互联网安全.csv')
+b1 <- data.frame(brandband$锘緾ountry.Code,brandband$X2010,brandband$X2012,brandband$X2014,brandband$X2016,brandband$X2018)
+i1 <- data.frame(internetuse$锘緾ountry.Code,internetuse$X2010,internetuse$X2012,internetuse$X2014,internetuse$X2016,internetuse$X2018)
+m1 <- data.frame(mobilecell$锘緾ountry.Code,mobilecell$X2010,mobilecell$X2012,mobilecell$X2014,mobilecell$X2016,mobilecell$X2018)
+s1 <- data.frame(safty$锘緾ountry.Code,safty$X2010,safty$X2012,safty$X2014,safty$X2016,safty$X2018)
+colnames(b1) <- c('Country.Code','b12010','b12012','b12014','b12016','b12018')
+colnames(i1) <- c('Country.Code','i12010','i12012','i12014','i12016','i12018')
+colnames(m1) <- c('Country.Code','m12010','m12012','m12014','m12016','m12018')
+colnames(s1) <- c('Country.Code','s12010','s12012','s12014','s12016','s12018')
+b1
+star <- merge(b1,i1)
+star1 <- merge(m1,s1)
+star2 <- merge(star,star1)
+star3 <- merge(star2,country1)
+head(star3)
+str(star3)
+tradefa <- star3[star3$group %in% c('middle and low','middle and high'),]
+str(tradefa)
+tr <- complete.cases(tradefa)
+tradefacilitaiton <- tradefa[tr,]
+str(tradefacilitaiton)
+head(tradefacilitaiton)
+write.csv(tradefacilitaiton,file = 'E:/仁荷大学/F-S/r语言/term exame.csv/tradefacilitaion.csv')
+
+#######trade facilitaion####
+gr <- read.csv('E:/仁荷大学/F-S/r语言/r语言数据/trade facilitaion/Burden of government regulation.csv')
+pb <- read.csv('E:/仁荷大学/F-S/r语言/r语言数据/trade facilitaion/Irregular payments and bribes.csv')
+tb <- read.csv('E:/仁荷大学/F-S/r语言/r语言数据/trade facilitaion/Prevalence of trade barriers.csv')
+gp <- read.csv('E:/仁荷大学/F-S/r语言/r语言数据/trade facilitaion/Transparency of government poli.csv')
+head(gr)
+gr1 <- data.frame(gr$code,gr$X2010,gr$X2012,gr$X2014,gr$X2016,gr$X2018)
+pb1 <- data.frame(pb$code,pb$X2010,pb$X2012,pb$X2014,pb$X2016,pb$X2018)
+tb1 <- data.frame(tb$code,tb$X2010,tb$X2012,tb$X2014,tb$X2016,tb$X2018)
+gp1 <- data.frame(gp$code,gp$X2010,gp$X2012,gp$X2014,gp$X2016,gp$X2018)
+colnames(gr1) <- c('Country.Code','gr2010','gr2012','gr2014','gr2016','gr2018')
+colnames(pb1) <- c('Country.Code','pb12010','pb12012','pb12014','pb12016','pb12018')
+colnames(tb1) <- c('Country.Code','tb12010','tb12012','tb12014','tb12016','tb12018')
+colnames(gp1) <- c('Country.Code','gp12010','gp12012','gp12014','gp12016','gp12018')
+gr1
+ft1 <- merge(gr1,pb1)
+ft2 <- merge(tb1,gp1)
+gt3 <- merge(ft1,ft2)
+ft3 <- merge(gt3,country1)
+head(ft3)
+ft4 <- ft3[ft3$group %in% c('middle and low','middle and high'),]
+str(ft4)
+ft5 <- complete.cases(ft4)
+tradefaci <- ft4[ft5,]
+str(tradefaci)
+write.csv(gp1,file =  'E:/仁荷大学/F-S/r语言/term exame.csv/Transparency of government poli.csv')
+write.csv(tradefaci,file =  'E:/仁荷大学/F-S/r语言/term exame.csv/tradefacilitaion.csv')
