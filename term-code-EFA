@@ -1,0 +1,21 @@
+####EFA分析对于global trade
+head(data2)
+head(globaltrade1)
+str(globaltrade1)
+library(psych)
+correlations <- cor(globaltrade1)###计算变量相关系数矩阵
+fa.parallel(correlations,n.obs = 410,fa='both',n.iter = 100,main = 'GT')
+####告知因子数为1，成分为1
+fa <- fa(correlations,nfactors=3,rotate = 'none',fm='pa')###fm代表选择评估方法，加权最小二乘
+fa
+####正交旋转提取因子
+fa.varimax <- fa(correlations,nfactors=3,rotate='varimax',fm='pa')
+fa.varimax
+###im在第一个因子载荷上较大，ex在第三个因子载荷上较大
+###斜交旋转提取因子
+fa.promax <- fa(correlations,nfactors=3,rotate='promax',fm='pa')
+install.packages('GPArotation')
+library(GPArotation)
+fa.promax
+####画图
+fa.diagram(fa.promax,digits=3)
