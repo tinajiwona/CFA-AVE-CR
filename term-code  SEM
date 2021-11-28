@@ -1,0 +1,19 @@
+####mediation model
+data('PoliticalDemocracy')
+head(PoliticalDemocracy)
+colnames(PoliticalDemocracy) <- c('IFB','IFI','IFm','IFs','gr','pb','tb','gp','IM','EX','total')
+model.3 <- '
+####latent varibles
+IF=~IFB+IFI+IFm+IFs
+TF=~gr+pb+tb+gp
+GT=~IM+EX
+#####mediation
+GT~b*TF+c*IF
+TF~a*IF
+indirect:=a*b
+direct:=c
+total:=c+(a*b)
+'
+fit.0 <- sem(model.3,data = PoliticalDemocracy,meanstructure=TRUE)
+summary(fit.0,fit.measures=TRUE,standardized=TRUE)
+semPaths(fit.0,whatLabels = 'std',edge.label.cex = 1,layout = 'tree',color = 4)
